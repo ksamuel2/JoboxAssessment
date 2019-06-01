@@ -1,5 +1,6 @@
 package AthleteQASession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class QuestionController {
                 qaSessionId, questionText, askedByName));
         return 0;
     }
+
+    //TODO Make image_url/text optional so either or is required
     @PostMapping(path = "/answer/{question_id}")
     public int answerQuestion(@PathVariable("question_id") int questionId,
                                 @RequestBody Map<String, String> body) {

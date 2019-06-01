@@ -4,11 +4,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class SessionController {
-    private final AtomicLong sessionIdCounter = new AtomicLong();
+    private String username = "root";
+    private String password = "spr1ng01";
+    private int port_number = 3306;
+    private SessionDatabaseController sessionDbCon =
+            new SessionDatabaseController(username, password, port_number);
 
     @PostMapping(path = "/qa")
     public int createSession(@RequestBody Map<String, String> body) {
@@ -17,6 +20,7 @@ public class SessionController {
         String endTime = body.get("end_date");
         System.out.println(String.format("Creating session with params: %s, %s, %s",
                 hostName, startTime, endTime));
+        sessionDbCon.createSession(hostName, startTime, endTime);
         return 0;
     }
     @GetMapping(path = "/qa/{qa_id}")
