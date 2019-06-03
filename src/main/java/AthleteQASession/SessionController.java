@@ -7,6 +7,7 @@ import java.util.Map;
 
 @RestController
 public class SessionController {
+    //TODO Ensure that these fields are customizable based off a configuration file
     private String username = "root";
     private String password = "spr1ng01";
     private int port_number = 3306;
@@ -24,15 +25,17 @@ public class SessionController {
         return 0;
     }
     @GetMapping(path = "/qa/{qa_id}")
+    @ResponseBody
     public Session getSession(@PathVariable("qa_id") int qaSessionId) {
         System.out.println(String.format("Getting session with params: %x",
                 qaSessionId));
-        return null;
+        return sessionDbCon.selectSessionFromTable(qaSessionId);
     }
     @GetMapping(path = "/qa/{qa_id}/questions")
-    public ArrayList<Question> getSessionQuestions(@PathVariable("qa_id") int qaSessionId) {
-        System.out.println(String.format("Getting session questions with params: %x",
-                qaSessionId));
-        return null;
+    public ArrayList<Question> getSessionQuestions(@PathVariable("qa_id") int qaSessionId,
+                                                   @RequestParam(name = "only_answered", defaultValue = "false") boolean showAnsweredQuestions) {
+        System.out.println(String.format("Getting session questions with params: %x, %b",
+                qaSessionId, showAnsweredQuestions));
+        return sessionDbCon.selectQuestionsFromSession(qaSessionId, showAnsweredQuestions);
     }
 }

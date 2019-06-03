@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 
 abstract public class DatabaseController {
     protected Connection connection;
+
     public DatabaseController(String user, String password, int portNumber) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
