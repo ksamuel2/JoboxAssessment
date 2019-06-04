@@ -1,0 +1,3 @@
+user=root
+password=spr1ng01
+port=3306

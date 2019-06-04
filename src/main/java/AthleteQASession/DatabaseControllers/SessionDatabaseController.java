@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class SessionDatabaseController extends DatabaseController {
 
-    public SessionDatabaseController(String user, String password, int portNumber) {
-        super(user, password, portNumber);
+    public SessionDatabaseController() {
+        super();
     }
 
     @Override

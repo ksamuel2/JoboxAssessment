@@ -8,8 +8,8 @@ import java.sql.*;
 
 public class QuestionDatabaseController extends DatabaseController {
 
-    public QuestionDatabaseController(String user, String password, int portNumber) {
-        super(user, password, portNumber);
+    public QuestionDatabaseController() {
+        super();
     }
 
     @Override

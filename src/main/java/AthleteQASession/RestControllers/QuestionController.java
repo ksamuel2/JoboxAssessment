@@ -7,12 +7,9 @@ import java.util.Map;
 
 @RestController
 public class QuestionController {
-    //TODO Ensure that these fields are customizable based off a configuration file
-    private String username = "root";
-    private String password = "spr1ng01";
-    private int port_number = 3306;
+
     private QuestionDatabaseController questionDbCon =
-            new QuestionDatabaseController(username, password, port_number);
+            new QuestionDatabaseController();
 
     @PostMapping(path = "/question/{qa_id}")
     public int askQuestion(@PathVariable("qa_id") int qaSessionId,

@@ -11,12 +11,9 @@ import java.util.Map;
 
 @RestController
 public class SessionController {
-    //TODO Ensure that these fields are customizable based off a configuration file
-    private String username = "root";
-    private String password = "spr1ng01";
-    private int port_number = 3306;
+
     private SessionDatabaseController sessionDbCon =
-            new SessionDatabaseController(username, password, port_number);
+            new SessionDatabaseController();
 
     @PostMapping(path = "/qa")
     public ResponseEntity<?> createSession(@RequestBody Map<String, String> body) {
