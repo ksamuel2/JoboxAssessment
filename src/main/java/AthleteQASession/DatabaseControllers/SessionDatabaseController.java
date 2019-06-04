@@ -2,6 +2,8 @@ package AthleteQASession.DatabaseControllers;
 
 import AthleteQASession.Models.Question;
 import AthleteQASession.Models.Session;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,20 +32,22 @@ public class SessionDatabaseController extends DatabaseController {
         }
     }
 
-    public void createSession(String hostName, String startTime, String endTime) {
+    public ResponseEntity<?> createSession(String hostName, String startTime, String endTime) {
         try {
             Statement stmt = this.connection.createStatement();
             int returnCode = stmt.executeUpdate("INSERT INTO sessions (hostName, startTime, endTime) " +
                     "VALUES (\"" + hostName + "\", \"" + startTime + "\", \"" + endTime + "\");");
             System.out.println("Successfully added session to database: " + returnCode);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (Exception e) {
             System.out.println("Exception caught adding session to database");
             System.out.println(e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public Session selectSessionFromTable(int sessionId) {
+    public ResponseEntity<Session> selectSessionFromTable(int sessionId) {
         try {
             Statement stmt = this.connection.createStatement();
             ResultSet result = stmt.executeQuery("SELECT * FROM sessions WHERE sessionId = " + sessionId + ";");
@@ -55,16 +59,16 @@ public class SessionDatabaseController extends DatabaseController {
                     result.getTime(START_TIME_INDEX),
                     result.getTime(END_TIME_INDEX));
             System.out.println("Successfully selected session[" + sessionId + "] from database");
-            return resultSession;
+            return new ResponseEntity<>(resultSession, HttpStatus.OK);
         }
         catch (Exception e) {
             System.out.println("Exception caught retrieving session[" + sessionId + "] from database");
             System.out.println(e);
-            return null;
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ArrayList<Question> selectQuestionsFromSession(int sessionId, boolean showAnsweredQuestions) {
+    public ResponseEntity<ArrayList<Question>> selectQuestionsFromSession(int sessionId, boolean showAnsweredQuestions) {
         try {
             Statement stmt = this.connection.createStatement();
             ResultSet result;
@@ -86,15 +90,15 @@ public class SessionDatabaseController extends DatabaseController {
                 sessionQuestions.add(currQuestion);
             }
             System.out.println("Successfully selected questions for session[" + sessionId + "] from database");
-            return sessionQuestions;
+            return new ResponseEntity<>(sessionQuestions, HttpStatus.OK);
         } catch (Exception e) {
             System.out.println("Exception caught retrieving quesetions for session[" + sessionId + "] from database");
             System.out.println(e);
-            return null;
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ArrayList<Session> selectAllSessions() {
+    public ResponseEntity<ArrayList<Session>> selectAllSessions() {
         try {
             Statement stmt = this.connection.createStatement();
             ResultSet result = stmt.executeQuery("SELECT * FROM sessions;");
@@ -109,11 +113,11 @@ public class SessionDatabaseController extends DatabaseController {
                 resultSessions.add(currSession);
             }
             System.out.println("Successfully selected all sessions from database");
-            return resultSessions;
+            return new ResponseEntity<>(resultSessions, HttpStatus.OK);
         } catch (Exception e) {
             System.out.println("Exception caught retrieving all sessions from database");
             System.out.println(e);
-            return null;
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

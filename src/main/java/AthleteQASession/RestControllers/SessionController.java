@@ -3,6 +3,7 @@ package AthleteQASession.RestControllers;
 import AthleteQASession.DatabaseControllers.SessionDatabaseController;
 import AthleteQASession.Models.Question;
 import AthleteQASession.Models.Session;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,25 +19,27 @@ public class SessionController {
             new SessionDatabaseController(username, password, port_number);
 
     @PostMapping(path = "/qa")
-    public int createSession(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> createSession(@RequestBody Map<String, String> body) {
         String hostName = body.get("host_name");
         String startTime = body.get("start_date");
         String endTime = body.get("end_date");
         System.out.println(String.format("Creating session with params: %s, %s, %s",
                 hostName, startTime, endTime));
-        sessionDbCon.createSession(hostName, startTime, endTime);
-        return 0;
+        return sessionDbCon.createSession(hostName, startTime, endTime);
     }
     @GetMapping(path = "/qa/{qa_id}")
     @ResponseBody
-    public Session getSession(@PathVariable("qa_id") int qaSessionId) {
+    public ResponseEntity<Session> getSession(@PathVariable("qa_id") int qaSessionId) {
         System.out.println(String.format("Getting session with params: %x",
                 qaSessionId));
+
         return sessionDbCon.selectSessionFromTable(qaSessionId);
     }
     @GetMapping(path = "/qa/{qa_id}/questions")
-    public ArrayList<Question> getSessionQuestions(@PathVariable("qa_id") int qaSessionId,
-                                                   @RequestParam(name = "only_answered", defaultValue = "false") boolean showAnsweredQuestions) {
+    public ResponseEntity<ArrayList<Question>> getSessionQuestions(
+            @PathVariable("qa_id") int qaSessionId,
+            @RequestParam(name = "only_answered", defaultValue = "false") boolean showAnsweredQuestions) {
+
         System.out.println(String.format("Getting session questions with params: %x, %b",
                 qaSessionId, showAnsweredQuestions));
         return sessionDbCon.selectQuestionsFromSession(qaSessionId, showAnsweredQuestions);

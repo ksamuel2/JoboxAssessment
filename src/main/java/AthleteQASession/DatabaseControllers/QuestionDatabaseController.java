@@ -1,6 +1,8 @@
 package AthleteQASession.DatabaseControllers;
 
 import AthleteQASession.DatabaseControllers.DatabaseController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.sql.*;
 
@@ -31,7 +33,7 @@ public class QuestionDatabaseController extends DatabaseController {
         }
     }
 
-    public void createQuestion(int sessionId, String question, String askedByUsername) {
+    public ResponseEntity<?> createQuestion(int sessionId, String question, String askedByUsername) {
         try {
             Statement stmt = this.connection.createStatement();
             // Inserts question into questions table only if the sessionId provided is for a currently live session
@@ -41,20 +43,24 @@ public class QuestionDatabaseController extends DatabaseController {
                     , sessionId, question, askedByUsername, sessionId));
             if(rowsUpdated == 0) {
                 System.out.println("Failed to add question to database");
-                return;
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
             System.out.println("Successfully added question to database");
+            return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {
+            System.out.println("Exception caught adding question to database");
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
     }
 
-    public void answerQuestion(int questionId, String answer, String imageUrl, String answeredByUsername) {
+    public ResponseEntity<?> answerQuestion(int questionId, String answer, String imageUrl, String answeredByUsername) {
         try {
             if(answer == null && imageUrl == null) {
                 System.out.println("Failed to add answer to database either answer or image url must be provided");
-                return;
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             Statement stmt = this.connection.createStatement();
             // Updates a question entry with an answer if and only if it does not already contain an answer
@@ -64,12 +70,16 @@ public class QuestionDatabaseController extends DatabaseController {
                     answer, imageUrl, answeredByUsername, questionId));
             if(rowsUpdated == 0) {
                 System.out.println("Failed to add answer to database");
-                return;
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
             System.out.println("Successfully added question to database");
+            return new ResponseEntity<>(HttpStatus.OK);
+
 
         } catch (Exception e) {
+            System.out.println("Exception caught adding answer to question table");
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
