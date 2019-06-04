@@ -1,5 +1,7 @@
 package AthleteQASession;
 
+import AthleteQASession.DatabaseControllers.QuestionDatabaseController;
+import AthleteQASession.DatabaseControllers.SessionDatabaseController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
